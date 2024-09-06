@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.star {
+    font-size: 1.5rem;
+    color: #d3d3d3; 
+    margin-right: 0.1rem;
+}
+.star.filled {
+    color: #facc15; 
+}
+.movie-card:hover .star {
+}
+.movie-card {
+    position: relative;
+}
