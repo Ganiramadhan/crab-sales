@@ -6,11 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     @vite(['resources/css/app.css', 'resources/js/app.js']) 
-    <title>{{ $title ?? 'Laravel Application' }}</title>
+    <title>{{ $title ?? 'GaniPedia' }}</title>
 </head>
 <body class="bg-gray-100">
-    <x-Navbar></x-Navbar>
-    <div class="min-h-full p-4">
+    <div class="min-h-full">
         <main>
             {{ $slot }}
         </main>
@@ -36,9 +35,11 @@
                 title: 'Validation Error!',
                 text: errorMessages,
                 icon: 'error',
-                confirmButtonText: 'OK'
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#FF6B6B' 
             });
         @endif
+
 
         document.querySelectorAll('.delete-form').forEach(form => {
             form.addEventListener('submit', function (e) {

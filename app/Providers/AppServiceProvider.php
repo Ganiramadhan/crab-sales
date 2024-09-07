@@ -21,4 +21,7 @@ class AppServiceProvider extends ServiceProvider
     {
         //
     }
+
+    // protected $namespace = 'App\\Http\\Controllers';
+
 }
