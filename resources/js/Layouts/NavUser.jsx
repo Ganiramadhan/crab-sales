@@ -1,11 +1,10 @@
 import NavLink from '@/Components/NavLink';
 import Dropdown from '@/Components/Dropdown';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const Navbar = ({ user }) => {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
-
     return (
         <nav className="bg-white border-b border-gray-100">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -31,7 +30,7 @@ const Navbar = ({ user }) => {
                                         type="button"
                                         className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
                                     >
-                                        {/* {user.name} */}
+                                        {user.name}
                                         <svg
                                             className="ms-2 -me-0.5 h-4 w-4"
                                             xmlns="http://www.w3.org/2000/svg"
@@ -87,10 +86,10 @@ const Navbar = ({ user }) => {
                 </div>
 
                 <div className="pt-4 pb-1 border-t border-gray-200">
-                    {/* <div className="px-4">
+                    <div className="px-4">
                         <div className="font-medium text-base text-gray-800">{user.name}</div>
                         <div className="font-medium text-sm text-gray-500">{user.email}</div>
-                    </div> */}
+                    </div>
 
                     <div className="mt-3 space-y-1">
                         <ResponsiveNavLink href={route('profile.edit')}>Profile</ResponsiveNavLink>

@@ -2,12 +2,11 @@ import React, { useState, useEffect } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import UserLayout from '@/Layouts/UserLayout';
 
-const MoviesPage = ({ title, movieData, userRole }) => {
+const MoviesPage = ({ title, movieData, user }) => {
     const [search, setSearch] = useState('');
     const [filteredMovies, setFilteredMovies] = useState(movieData);
 
     useEffect(() => {
-        console.log('User Role:', userRole);
         setFilteredMovies(
             movieData.filter(movie =>
                 movie.title.toLowerCase().includes(search.toLowerCase())
@@ -15,12 +14,12 @@ const MoviesPage = ({ title, movieData, userRole }) => {
         );
     }, [search, movieData]);
 
-    const Layout = userRole === 'admin' ? AuthenticatedLayout : UserLayout;
+    const Layout = user.role === 'admin' ? AuthenticatedLayout : UserLayout;
 
     return (
         <Layout
-            user={userRole === 'admin' ? 'Admin' : null}
-            header={userRole === 'admin' ? <h1 className="text-2xl font-bold mb-6 text-gray-800">{title}</h1> : null}
+            user={user}
+            header={user.role === 'admin' ? <h1 className="text-2xl font-bold mb-6 text-gray-800">{title}</h1> : null}
         >
             <div className="container mx-auto px-4 py-6">
                 <input

@@ -21,7 +21,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 
-// Rute untuk pengguna biasa (user)
+// User Route
 Route::middleware(['auth'])->group(function () {
     Route::get('movies', [MovieController::class, 'index'])->name('movies.index');
 
@@ -31,7 +31,7 @@ Route::middleware(['auth'])->group(function () {
 
 });
 
-// Rute untuk admin, dengan middleware 'IsAdmin' yang baru kita buat
+// Admin Route
 Route::middleware(['auth', IsAdmin::class])->group(function () {
     
     Route::get('products', [ProductController::class, 'index'])->name('products.index');

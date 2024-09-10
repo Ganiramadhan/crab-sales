@@ -4,7 +4,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import Modal from './ProductModal';
 import Swal from 'sweetalert2';
 
-const ProductsIndex = ({ title, products }) => {
+const ProductsIndex = ({ title, products, user}) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentProduct, setCurrentProduct] = useState(null);
     const [mode, setMode] = useState('');
@@ -61,7 +61,7 @@ const ProductsIndex = ({ title, products }) => {
 
     return (
         <AuthenticatedLayout
-            user='Admin'
+            user= {user}
             header={<h1 className="text-3xl font-bold mb-6 text-gray-800">{title}</h1>}
         >
             <div className="container mx-auto px-4 py-6">

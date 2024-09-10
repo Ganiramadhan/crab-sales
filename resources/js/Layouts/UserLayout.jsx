@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Navbar from './NavUser';
 
 const UserLayout = ({ user, header, children }) => {
+    
     return (
         <div className="min-h-screen bg-gray-100">
             <Navbar user={user} />

@@ -3,7 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import Swal from 'sweetalert2';
 import PostModal from './PostModal'; 
 
-const PostsPage = ({ title, posts, categories }) => {
+const PostsPage = ({ title, posts, categories, user }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedPost, setSelectedPost] = useState(null);
     const [searchQuery, setSearchQuery] = useState(''); 
@@ -92,7 +92,7 @@ const PostsPage = ({ title, posts, categories }) => {
 
     return (
         <AuthenticatedLayout
-            user="Admin"
+            user={user}
             header={<h1 className="text-2xl font-bold mb-6 text-gray-800">{title}</h1>}
         >
             <div className="container mx-auto px-4 py-6">

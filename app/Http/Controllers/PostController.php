@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\Category; 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class PostController extends Controller
 {
     public function index(Request $request)
     {
+        $user = Auth::user();
         $categories = Category::all();
         $query = Post::query();
 
@@ -24,6 +26,7 @@ class PostController extends Controller
 
         return Inertia::render('Posts/Index', [
             'posts' => $posts,
+            'user' => $user,
             'categories' => $categories,
         ]);
     }
