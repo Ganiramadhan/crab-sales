@@ -4,60 +4,51 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\Rules;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class RegisteredUserController extends Controller
 {
     /**
-     * Menampilkan halaman register.
+     * Display the registration view.
      */
-    public function create()
+    public function create(): Response
     {
-        return view('auth.login')->with('form', 'register');
+        return Inertia::render('Auth/Register');
     }
 
     /**
-     * Menyimpan data user baru.
+     * Handle an incoming registration request.
+     *
+     * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        try {
-            $validated = $request->validate([
-                'name' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-                'password' => ['required', 'confirmed', Password::min(8)->mixedCase()->letters()->numbers()],
-            ], [
-                'name.required' => 'Name is required.',
-                'email.required' => 'Email is required.',
-                'email.unique' => 'The email has already been taken. Please use a different one.',
-                'password.required' => 'Password is required.',
-                'password.confirmed' => 'Password confirmation does not match.',
-            ]);
-    
-            User::create([
-                'name' => $validated['name'],
-                'email' => $validated['email'],
-                'password' => Hash::make($validated['password']),
-            ]);
-    
-            // Redirect with success message
-            return redirect()->route('login')
-                ->with('form', 'login')
-                ->with('register_success', true)
-                ->with('success', 'Registration successful! Please log in.');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            // Get the first validation error
-            $errors = $e->errors();
-            $firstError = reset($errors);
-    
-            return redirect()->route('register')
-                ->with('form', 'register')
-                ->withErrors($firstError)
-                ->withInput();
-        }
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role' => 'required|string|in:user,admin',  
+
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => $request->role,  
+        ]);
+
+        event(new Registered($user));
+
+        Auth::login($user);
+
+        return redirect(route('dashboard', absolute: false));
     }
-    
-    
 }

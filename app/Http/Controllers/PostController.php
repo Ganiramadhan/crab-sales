@@ -5,81 +5,111 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\Category; 
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class PostController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::with('category')->get();
-        $categories = Category::all(); 
-        return view('pages.post', [
-            'title' => 'All Posts',
+        $categories = Category::all();
+        $query = Post::query();
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where('title', 'like', '%' . $search . '%')
+                    ->orWhere('content', 'like', '%' . $search . '%');
+        }
+
+        $posts = $query->get();
+
+        return Inertia::render('Posts/Index', [
             'posts' => $posts,
-            'categories' => $categories 
+            'categories' => $categories,
         ]);
     }
-    
+
+    public function show($slug)
+    {
+        $post = Post::where('slug', $slug)->firstOrFail();
+        return Inertia::render('Posts/Show', [
+            'post' => $post,
+        ]);
+    }
 
     public function create()
     {
         $categories = Category::all(); 
-        return view('pages.post', ['title' => 'All Posts', 'posts' => Post::all(), 'categories' => $categories]);
+
+        return Inertia::render('Posts/Create', [
+            'categories' => $categories
+        ]);
     }
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'category_id' => 'required|integer|exists:categories,id',
             'image' => 'nullable|image',
         ]);
     
-        $data = $request->all();
-        $data['slug'] = \Illuminate\Support\Str::slug($request->title);
+        $validatedData['slug'] = \Illuminate\Support\Str::slug($request->title);
     
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('images', 'public');
+            $validatedData['image'] = $request->file('image')->store('images', 'public');
         }
     
-        Post::create($data);
-        return redirect()->route('posts.index')->with('success', 'Post created successfully.');
+        try {
+            $post = Post::create($validatedData);
+            return response()->json(['success' => true, 'post' => $post], 200);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
     }
-    
-
     
 
     public function edit($slug)
     {
         $post = Post::where('slug', $slug)->firstOrFail();
-        return response()->json($post);
+        $categories = Category::all();
+
+        return Inertia::render('Posts/Edit', [
+            'post' => $post,
+            'categories' => $categories,
+        ]);
     }
 
     public function update(Request $request, $slug)
     {
         $post = Post::where('slug', $slug)->firstOrFail();
-    
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'category_id' => 'required|integer|exists:categories,id',
-            'image' => 'nullable|image',
-        ]);
-    
-        $data = $request->except(['existing_slug']);
-    
+        
+        $post->title = $request->input('title');
+        $post->content = $request->input('content');
+        $post->category_id = $request->input('category_id');
+        
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('images', 'public');
+            $path = $request->file('image')->store('images', 'public');
+            $post->image = $path; // Ganti gambar hanya jika ada gambar baru
         }
     
-        $post->update($data);
-        return redirect()->route('posts.index')->with('success', 'Post updated successfully.');
+        $post->save();
+        
+        return response()->json(['success' => true, 'post' => $post]);
     }
+    
+    
+    
 
     public function destroy($slug)
     {
-        $post = Post::where('slug', $slug)->firstOrFail();
-        $post->delete();
-        return redirect()->route('posts.index')->with('success', 'Post deleted successfully.');
+        $post = Post::where('slug', $slug)->first();
+
+        if ($post) {
+            $post->delete();
+            return response()->json(['success' => true], 200);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Post not found.'], 404);
     }
 }

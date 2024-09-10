@@ -11,15 +11,13 @@ class Post extends Model
         'title', 'slug', 'content', 'category_id', 'image'
     ];
 
-    public $timestamps = true; // Menandakan bahwa model ini menggunakan timestamps
+    public $timestamps = true;
 
-    // Handle image uploads (if necessary)
     public function setImageAttribute($value)
     {
         if (is_string($value)) {
             $this->attributes['image'] = $value;
         } elseif ($value instanceof \Illuminate\Http\UploadedFile) {
-            // Handle file upload
             $path = $value->store('images', 'public');
             $this->attributes['image'] = $path;
         }
