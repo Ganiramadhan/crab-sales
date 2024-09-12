@@ -8,6 +8,7 @@ const Modal = ({ isOpen, onClose, mode, product }) => {
         price: '',
         stock: ''
     });
+    const [isLoading, setIsLoading] = useState(false); 
 
     useEffect(() => {
         if (mode === 'edit' && product) {
@@ -33,6 +34,7 @@ const Modal = ({ isOpen, onClose, mode, product }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true); 
         const url = mode === 'edit'
             ? route('products.update', product.id)
             : route('products.store');
@@ -60,6 +62,8 @@ const Modal = ({ isOpen, onClose, mode, product }) => {
                 title: 'Error',
                 text: 'Failed to save the product. Please try again.'
             });
+        } finally {
+            setIsLoading(false); 
         }
     };
 
@@ -149,14 +153,16 @@ const Modal = ({ isOpen, onClose, mode, product }) => {
                             type="button"
                             onClick={onClose}
                             className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
+                            disabled={isLoading}
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
-                            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+                            className={`bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 ${isLoading && 'opacity-50 cursor-not-allowed'}`}
+                            disabled={isLoading}
                         >
-                            {mode === 'edit' ? 'Update Product' : 'Add Product'}
+                            {isLoading ? 'Loading...' : mode === 'edit' ? 'Update Product' : 'Add Product'}
                         </button>
                     </div>
                 </form>

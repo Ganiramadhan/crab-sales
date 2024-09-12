@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\FishController;
 use App\Http\Controllers\MovieController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
@@ -14,6 +16,17 @@ use Inertia\Inertia;
 Route::get('/', function () {
     return Inertia::render('Auth/Login');
 });
+
+
+Route::prefix('fish')->name('fish.')->group(function () {
+    Route::get('/', [FishController::class, 'index'])->name('index');
+    Route::post('/', [FishController::class, 'store'])->name('store');
+    Route::post('{fish}', [FishController::class, 'update'])->name('update');
+    Route::delete('{fish}', [FishController::class, 'destroy'])->name('destroy');
+});
+
+Route::post('/create-snap-token', [PaymentController::class, 'createTransaction']);
+
 
 
 Route::get('/dashboard', function () {
@@ -50,7 +63,7 @@ Route::middleware(['auth', IsAdmin::class])->group(function () {
     Route::get('posts/create', [PostController::class, 'create'])->name('posts.create');    
     Route::post('posts', [PostController::class, 'store'])->name('posts.store');
     Route::get('posts/{slug}/edit', [PostController::class, 'edit'])->name('posts.edit');
-    Route::put('posts/{slug}', [PostController::class, 'update'])->name('posts.update');
+    Route::post('posts/{slug}', [PostController::class, 'update'])->name('posts.update');
     Route::delete('posts/{slug}', [PostController::class, 'destroy'])->name('posts.destroy');
     // Route::resource('posts', PostController::class);
     

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { FaTimes, FaPlus, FaEdit } from 'react-icons/fa'; 
 import Swal from 'sweetalert2';
 
 
@@ -20,9 +21,9 @@ const PostModal = ({ post, categories = [], onClose, onSave }) => {
                 title: post.title,
                 content: post.content,
                 category_id: post.category_id,
-                image: null, 
+                image: null,
             });
-            setImagePreview(post.image ? `/storage/${post.image}` : ''); 
+            setImagePreview(post.image ? `/storage/${post.image}` : '');
             setEditMode(true);
         } else {
             setFormData({
@@ -43,7 +44,7 @@ const PostModal = ({ post, categories = [], onClose, onSave }) => {
             reader.onload = (e) => setImagePreview(e.target.result);
             reader.readAsDataURL(formData.image);
         } else if (!post) {
-            setImagePreview(''); 
+            setImagePreview('');
         }
     }, [formData.image, post]);
 
@@ -62,26 +63,25 @@ const PostModal = ({ post, categories = [], onClose, onSave }) => {
         });
     };
 
-    const handleSubmit = (e) => {   
+    const handleSubmit = (e) => {
         e.preventDefault();
         const url = editMode ? `/posts/${formData.slug}` : '/posts';
-        const method = editMode ? 'PUT' : 'POST';
-    
+        const method = editMode ? 'POST' : 'POST';
+
         const formDataObj = new FormData();
-    
+
         Object.keys(formData).forEach(key => {
-            // Jangan tambahkan image jika null dan mode edit
             if (!(key === 'image' && formData[key] === null)) {
                 formDataObj.append(key, formData[key]);
             }
         });
-    
+
         fetch(url, {
             method,
             body: formDataObj,
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            }
+            },
         })
         .then(response => {
             if (!response.ok) {
@@ -93,8 +93,9 @@ const PostModal = ({ post, categories = [], onClose, onSave }) => {
         })
         .then(data => {
             if (data.success) {
-                onSave(data.post); 
+                onSave(data.post, editMode); 
                 Swal.fire('Success!', `Post has been ${editMode ? 'updated' : 'added'}.`, 'success');
+                onClose();
             } else {
                 Swal.fire('Error!', data.message || 'An error occurred.', 'error');
             }
@@ -104,8 +105,7 @@ const PostModal = ({ post, categories = [], onClose, onSave }) => {
             console.error('Error saving post:', error.message || error);
         });
     };
-    
-    
+
     return (
         <div className="modal-overlay fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 myModal">
             <div className="modal bg-white p-4 rounded-lg shadow-lg max-w-lg w-full">
@@ -117,12 +117,12 @@ const PostModal = ({ post, categories = [], onClose, onSave }) => {
                 </button>
                 <h2 className="text-xl font-semibold mb-4">{editMode ? 'Edit Post' : 'Add New Post'}</h2>
                 <form onSubmit={handleSubmit} encType="multipart/form-data">
-                <div className="mb-4">
+                    <div className="mb-4">
                         <label htmlFor="title" className="block text-gray-700">Title</label>
                         <input
                             type="text"
                             id="title"
-                            placeholder='Enter the title here...'
+                            placeholder="Enter the title here..."
                             name="title"
                             value={formData.title}
                             onChange={handleInputChange}
@@ -135,7 +135,7 @@ const PostModal = ({ post, categories = [], onClose, onSave }) => {
                         <textarea
                             id="content"
                             name="content"
-                            placeholder='Enter the content here...'
+                            placeholder="Enter the content here..."
                             value={formData.content}
                             onChange={handleInputChange}
                             className="w-full p-2 border border-gray-300 rounded-lg"
@@ -182,15 +182,17 @@ const PostModal = ({ post, categories = [], onClose, onSave }) => {
                         <button
                             type="button"
                             onClick={onClose}
-                            className="bg-gray-500 text-white px-4 py-2 rounded"
+                            className="bg-gray-500 text-white px-4 py-2 rounded flex items-center space-x-2"
                         >
-                            Cancel
+                            <FaTimes /> {/* Ikon untuk tombol Cancel */}
+                            <span>Cancel</span>
                         </button>
                         <button
                             type="submit"
-                            className="bg-blue-500 text-white px-4 py-2 rounded"
+                            className="bg-blue-500 text-white px-4 py-2 rounded flex items-center space-x-2"
                         >
-                            {editMode ? 'Update' : 'Add'} Post
+                            {editMode ? <FaEdit /> : <FaPlus />} 
+                            <span>{editMode ? 'Update' : 'Add'} Post</span>
                         </button>
                     </div>
                 </form>

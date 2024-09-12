@@ -22,6 +22,7 @@ const Navbar = ({ user }) => {
                             <NavLink href={route('products.index')} active={route().current('products.index')}>Product</NavLink>
                             <NavLink href={route('posts.index')} active={route().current('posts.index')}>Post</NavLink>
                             <NavLink href={route('movies.index')} active={route().current('movies.index')}>Movie</NavLink>
+                            <NavLink href={route('fish.index')} active={route().current('fish.index')}>Fish</NavLink>
                         </div>
                     </div>
 
@@ -88,6 +89,7 @@ const Navbar = ({ user }) => {
                     <ResponsiveNavLink href={route('products.index')} active={route().current('products.index')}>Product</ResponsiveNavLink>
                     <ResponsiveNavLink href={route('posts.index')} active={route().current('posts.index')}>Post</ResponsiveNavLink>
                     <ResponsiveNavLink href={route('movies.index')} active={route().current('movies.index')}>Movie</ResponsiveNavLink>
+                    <ResponsiveNavLink href={route('fish.index')} active={route().current('fish.index')}>Fish</ResponsiveNavLink>
                 </div>
 
                 <div className="pt-4 pb-1 border-t border-gray-200">
