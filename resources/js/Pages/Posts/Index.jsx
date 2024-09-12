@@ -104,7 +104,7 @@ const PostsPage = ({ title, posts, categories, user }) => {
     return (
         <AuthenticatedLayout
             user={user}
-            header={<h1 className="text-2xl font-bold mb-6 text-gray-800">{title}</h1>}
+            header={<h2 className="font-semibold text-xl text-gray-600 leading-tight">{title}</h2>}
         >
             <div className="container mx-auto px-4 py-6">
                 <SearchBar searchQuery={searchQuery} onSearchChange={setSearchQuery} />

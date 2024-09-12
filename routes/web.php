@@ -47,17 +47,8 @@ Route::middleware(['auth'])->group(function () {
 // Admin Route
 Route::middleware(['auth', IsAdmin::class])->group(function () {
     
-    Route::get('products', [ProductController::class, 'index'])->name('products.index');
-    Route::get('products/create', [ProductController::class, 'create'])->name('products.create');
-    Route::post('products', [ProductController::class, 'store'])->name('products.store');
-    Route::get('products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
-    Route::put('products/{product}', [ProductController::class, 'update'])->name('products.update');
-    Route::delete('products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
-
     // Route::get('movies', [MovieController::class, 'index'])->name('movies.index');
-    
-    
-    
+        
     Route::get('posts', [PostController::class, 'index'])->name('posts.index');    
     Route::get('posts/{slug}', [PostController::class, 'show'])->name('posts.show');    
     Route::get('posts/create', [PostController::class, 'create'])->name('posts.create');    

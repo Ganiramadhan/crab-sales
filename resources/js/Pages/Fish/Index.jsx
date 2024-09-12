@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { FaPlus } from 'react-icons/fa';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import UserLayout from '@/Layouts/UserLayout';
 import axios from 'axios';
@@ -8,7 +9,6 @@ import CartModal from './CartModal';
 import CartSummary from './CartSummary';
 import AddEditFishModal from './AddEditFishModal'; 
 import ConfirmDeleteModal from './ConfirmDeleteModal'; 
-import { FaPlus } from 'react-icons/fa';
 
 
 export default function FishProducts({ user, title, fishProducts: initialFishProducts }) {
@@ -135,7 +135,7 @@ export default function FishProducts({ user, title, fishProducts: initialFishPro
     return (
         <Layout
             user={user}
-            header={<h1 className="text-2xl font-bold mb-6 text-gray-800">{title}</h1>}
+            header={<h2 className="font-semibold text-xl text-gray-600 leading-tight">{title}</h2>}
         >
             <div className="container mx-auto py-8">
                 {user.role === 'admin' && (
@@ -146,7 +146,6 @@ export default function FishProducts({ user, title, fishProducts: initialFishPro
                         <FaPlus className="mr-2" /> Add Fish
                     </button>
                 )}
-
                 <div className="mb-4">
                     <input
                         type="text"

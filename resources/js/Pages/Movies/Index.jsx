@@ -19,7 +19,7 @@ const MoviesPage = ({ title, movieData, user }) => {
     return (
         <Layout
             user={user}
-            header={user.role === 'admin' ? <h1 className="text-2xl font-bold mb-6 text-gray-800">{title}</h1> : null}
+            header={user.role === 'admin' ? <h2 className="font-semibold text-xl text-gray-600 leading-tight">{title}</h2> : null}
         >
             <div className="container mx-auto px-4 py-6">
                 <input

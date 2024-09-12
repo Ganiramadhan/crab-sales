@@ -27,6 +27,7 @@ class PostController extends Controller
         return Inertia::render('Posts/Index', [
             'posts' => $posts,
             'user' => $user,
+            'title' => 'Post List',
             'categories' => $categories,
         ]);
     }

@@ -11,7 +11,7 @@ export default function Dashboard({ auth }) {
     return (
         <Layout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">{headerText}</h2>}
+            header={<h2 className="font-semibold text-xl text-gray-600 leading-tight">{headerText}</h2>}
         >
             <Head title={headerText} />
 
