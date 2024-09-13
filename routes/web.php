@@ -4,8 +4,9 @@ use App\Http\Controllers\FishController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PostController;
-use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RajaOngkirController;
+use App\Http\Controllers\ShippingController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\IsAdmin;
 use Inertia\Inertia;
@@ -16,6 +17,11 @@ use Inertia\Inertia;
 Route::get('/', function () {
     return Inertia::render('Auth/Login');
 });
+
+
+
+Route::get('/city', [RajaOngkirController::class, 'city']);
+Route::post('/shipping-cost', [ShippingController::class, 'checkShippingCost']);
 
 
 Route::prefix('fish')->name('fish.')->group(function () {

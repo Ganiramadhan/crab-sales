@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FaPlus } from 'react-icons/fa';
+import { Head } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import UserLayout from '@/Layouts/UserLayout';
 import axios from 'axios';
@@ -65,10 +66,8 @@ export default function FishProducts({ user, title, fishProducts: initialFishPro
         Swal.fire('Added!', 'Fish product has been added to the cart.', 'success');
     };
 
-    const handlePayment = async () => {
+    const handlePayment = async (totalAmount) => {
         try {
-            const totalAmount = cart.reduce((sum, item) => sum + item.price_kg * item.quantity, 0);
-    
             const response = await axios.post('/create-snap-token', {
                 order_id: `order-${Date.now()}`, 
                 gross_amount: totalAmount,
@@ -80,13 +79,14 @@ export default function FishProducts({ user, title, fishProducts: initialFishPro
     
             window.snap.pay(snapToken, {
                 onSuccess: function(result) {
-                    // Reduce stock and reset cart
                     const updatedFishProducts = fishProducts.map(fish => {
-                        if (fish.id === currentFish.id) {
-                            return { ...fish, stock: fish.stock - selectedKg };
+                        const itemInCart = cart.find(item => item.id === fish.id);
+                        if (itemInCart) {
+                            return { ...fish, stock: fish.stock - itemInCart.quantity };
                         }
                         return fish;
                     });
+    
                     setFishProducts(updatedFishProducts);
                     setCart([]);
                     setSelectedKg(1);
@@ -107,6 +107,7 @@ export default function FishProducts({ user, title, fishProducts: initialFishPro
             Swal.fire('Error!', 'Failed to initiate payment.', 'error');
         }
     };
+    
 
     const handleAddFish = () => {
         setEditingFish(null);
@@ -137,6 +138,7 @@ export default function FishProducts({ user, title, fishProducts: initialFishPro
             user={user}
             header={<h2 className="font-semibold text-xl text-gray-600 leading-tight">{title}</h2>}
         >
+        <Head title={title} />
             <div className="container mx-auto py-8">
                 {user.role === 'admin' && (
                     <button
@@ -186,7 +188,7 @@ export default function FishProducts({ user, title, fishProducts: initialFishPro
                 )}
 
                 {cart.length > 0 && (
-                    <CartSummary cart={cart} handlePayment={handlePayment} />
+                    <CartSummary cart={cart} handlePayment={handlePayment} user={user} />
                 )}
 
                 {showAddEditModal && (

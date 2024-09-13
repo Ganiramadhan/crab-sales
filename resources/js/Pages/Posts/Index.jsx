@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import PostModal from './PostModal';
 import SearchBar from './SearchBar';
 import PostList from './PostList';
+import { Head } from '@inertiajs/react';
 import { FaPlus } from 'react-icons/fa';
 
 
@@ -106,6 +107,7 @@ const PostsPage = ({ title, posts, categories, user }) => {
             user={user}
             header={<h2 className="font-semibold text-xl text-gray-600 leading-tight">{title}</h2>}
         >
+        <Head title={title} />
             <div className="container mx-auto px-4 py-6">
                 <SearchBar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
 

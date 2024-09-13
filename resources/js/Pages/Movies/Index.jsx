@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import UserLayout from '@/Layouts/UserLayout';
+import { Head } from '@inertiajs/react';
 
 const MoviesPage = ({ title, movieData, user }) => {
     const [search, setSearch] = useState('');
@@ -21,6 +22,7 @@ const MoviesPage = ({ title, movieData, user }) => {
             user={user}
             header={user.role === 'admin' ? <h2 className="font-semibold text-xl text-gray-600 leading-tight">{title}</h2> : null}
         >
+        <Head title={title} />
             <div className="container mx-auto px-4 py-6">
                 <input
                     type="text"
