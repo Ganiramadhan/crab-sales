@@ -3,87 +3,74 @@ import { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import { FaShoppingCart } from 'react-icons/fa';
 
-export default function CartSummary({ cart, handlePayment, user }) {
+export default function CartSummary({ cart, handlePayment, user, apiKey }) { 
     const [shippingOptions, setShippingOptions] = useState([]);
     const [selectedShipping, setSelectedShipping] = useState(null);
     const [voucherOptions, setVoucherOptions] = useState([]);
     const [selectedVoucher, setSelectedVoucher] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [cityMap, setCityMap] = useState({});
 
     const totalPrice = cart.reduce((total, item) => total + (item.price_kg * item.quantity), 0);
 
     useEffect(() => {
         const fetchCity = async () => {
             try {
-                const response = await axios.get('/city', {
-                    params: { key: KEY_API }
-                });
+                const { data } = await axios.get('/city', { params: { key: apiKey } });
 
-                if (response.data.rajaongkir.status.code === 200) {
-                    const cityData = response.data.rajaongkir.results;
-                    const cityMap = {};
-                    cityData.forEach(city => {
-                        cityMap[city.city_name] = city.city_id;
-                    });
-                    setCityOptions(cityMap);
-
-                    // Set selected city ID based on user city
-                    setSelectedCityId(cityMap[user.city] || null);
+                if (data.rajaongkir.status.code === 200) {
+                    const cityMapTemp = data.rajaongkir.results.reduce((map, city) => {
+                        map[city.city_name] = city.city_id;
+                        return map;
+                    }, {});
+                    setCityMap(cityMapTemp);
                 } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Failed to fetch cities',
-                        text: response.data.rajaongkir.status.description,
-                    });
+                    showError('Failed to fetch cities', data.rajaongkir.status.description);
                 }
             } catch (error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Error fetching cities.',
-                });
+                showError('Error fetching cities.');
             }
         };
 
         fetchCity();
-    }, [user.city]);
+    }, [apiKey]);
+
+    const fetchShippingCost = async (selectedFish) => {
+        try {
+            setLoading(true);
+            const originCityId = cityMap[selectedFish.city];
+            const destinationCityId = cityMap[user.city];
+
+            if (!originCityId || !destinationCityId) {
+                showWarning('City not found', `Please check the cities: ${selectedFish.city} or ${user.city}`);
+                return;
+            }
+
+            const { data } = await axios.post('/shipping-cost', {
+                origin: originCityId,
+                destination: destinationCityId,
+                weight: selectedFish.quantity * 1000,
+                courier: 'jne'
+            });
+
+            if (data.status === 'success') {
+                setShippingOptions(data.data);
+                setSelectedShipping(data.data[0]);
+            } else {
+                showError('Shipping cost retrieval failed', 'Unable to retrieve shipping cost.');
+            }
+        } catch (error) {
+            showError('Error checking shipping cost.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchShippingCost = async () => {
-            try {
-                setLoading(true);
-                const selectedFish = cart[0]; 
-                const response = await axios.post('/shipping-cost', {
-                    origin: selectedFish.city,
-                    destination: user.city,
-                    weight: selectedFish.quantity * 1000, // Weight in grams (kg to grams)
-                    courier: 'jne' // Default courier
-                });
-
-                if (response.data.status === 'success') {
-                    setShippingOptions(response.data.data); 
-                    setSelectedShipping(response.data.data[0]); 
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Shipping cost retrieval failed',
-                        text: 'Unable to retrieve shipping cost.',
-                    });
-                }
-            } catch (error) {
-                console.error('Error checking shipping cost:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Error checking shipping cost.',
-                });
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchShippingCost();
-    }, [cart]);
+        if (cart.length > 0 && Object.keys(cityMap).length > 0) {
+            fetchShippingCost(cart[0]);
+        }
+    }, [cart, cityMap]);
 
     const handleShippingChange = (event) => {
         const selectedService = shippingOptions.find(option => option.service === event.target.value);
@@ -106,6 +93,22 @@ export default function CartSummary({ cart, handlePayment, user }) {
         handlePayment(totalWithVoucher);
     };
 
+    const showError = (title, text = 'An error occurred') => {
+        Swal.fire({
+            icon: 'error',
+            title,
+            text,
+        });
+    };
+
+    const showWarning = (title, text) => {
+        Swal.fire({
+            icon: 'warning',
+            title,
+            text,
+        });
+    };
+
     return (
         <div className="relative bg-white rounded-lg shadow-lg p-6 mt-8 max-w-xl mx-auto">
             <FaShoppingCart className="absolute top-4 right-4 text-2xl text-gray-700 cursor-pointer" />
@@ -119,7 +122,6 @@ export default function CartSummary({ cart, handlePayment, user }) {
                 </p>
             </div>
 
-            {/* List Items in Cart */}
             {cart.map((item, index) => (
                 <div key={index} className="flex justify-between items-center mb-2">
                     <span>{item.name} ({item.quantity} kg)</span>
@@ -127,13 +129,11 @@ export default function CartSummary({ cart, handlePayment, user }) {
                 </div>
             ))}
 
-            {/* Total Price */}
             <div className="flex justify-between items-center border-t border-gray-300 pt-4 mt-4">
                 <span className="font-semibold">Total Price</span>
                 <span className="font-semibold">Rp {totalPrice.toLocaleString()}</span>
             </div>
 
-            {/* Shipping Options */}
             <div className="flex flex-col mt-4">
                 <label className="font-semibold mb-2">Shipping Cost</label>
                 <select
@@ -150,7 +150,6 @@ export default function CartSummary({ cart, handlePayment, user }) {
                     ))}
                 </select>
                 {loading && <p className="mt-2 text-gray-500">Loading...</p>}
-                {/* Shipping Cost Details */}
                 {selectedShipping && (
                     <div className="mt-2 p-2 border border-gray-300 rounded bg-gray-50">
                         <h4 className="font-semibold">Selected Shipping Option:</h4>
@@ -161,7 +160,6 @@ export default function CartSummary({ cart, handlePayment, user }) {
                 )}
             </div>
 
-            {/* Voucher Options */}
             <div className="flex flex-col mt-4">
                 <label className="font-semibold mb-2">Voucher</label>
                 <select
@@ -178,13 +176,11 @@ export default function CartSummary({ cart, handlePayment, user }) {
                 </select>
             </div>
 
-            {/* Total with Shipping and Voucher */}
             <div className="flex justify-between items-center border-t border-gray-300 pt-4 mt-4">
                 <span className="font-bold text-lg">Total Payment</span>
                 <span className="font-bold text-lg">Rp {totalWithVoucher.toLocaleString()}</span>
             </div>
 
-            {/* Payment Button */}
             <button
                 onClick={proceedToPayment}
                 className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none mt-4 w-full"

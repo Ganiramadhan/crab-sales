@@ -13,6 +13,13 @@ class RajaOngkirController extends Controller
             'key' => env('RAJAONGKIR_API_KEY'),
         ]);
 
-        return response()->json($response->json());
+        if ($response->successful()) {
+            return response()->json($response->json());
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to fetch cities'
+            ], $response->status());
+        }
     }
 }

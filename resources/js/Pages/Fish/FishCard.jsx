@@ -17,8 +17,14 @@ export default function FishCard({ fish, user, handleAddToCart, handleEdit, hand
                 className="w-full h-48 object-cover"
             />
             <div className="p-4">
-                <h3 className="text-lg font-semibold text-gray-900">{fish.name}</h3>
-                <p className="text-gray-700 mt-2">{fish.description.substring(0,130)}...</p>
+                {/* Name and City Badge in the same line */}
+                <div className="flex justify-between items-center">
+                    <h3 className="text-lg font-semibold text-gray-900">{fish.name}</h3>
+                    <span className="bg-blue-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                        {fish.city}
+                    </span>
+                </div>
+                <p className="text-gray-700 mt-2">{fish.description.substring(0, 130)}...</p>
                 <div className="mt-4">
                     <p className="text-gray-900 font-bold">
                         Price: {formatRupiah(fish.price_kg)} /kg
@@ -52,4 +58,3 @@ export default function FishCard({ fish, user, handleAddToCart, handleEdit, hand
         </div>
     );
 }
-    
