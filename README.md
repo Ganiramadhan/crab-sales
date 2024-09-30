@@ -1,14 +1,16 @@
-# Laravel 11 Product and Post Management
+# Fresh Crab Sales Application
 
-This web project is built with **Laravel 11** and **Tailwind CSS**, featuring a clean and modern design. It offers CRUD functionality for products and posts while fetching and displaying movie lists from an external API. The project leverages reusable components for efficient development and styling.
+This web application is developed with **Laravel 11** and **Tailwind CSS**, featuring a sleek and modern design. It provides robust functionality for managing fresh crab products, including a seamless shopping experience with cart management, secure payment processing via Midtrans, and accurate shipping cost calculations using Raja Ongkir. The application is built with a focus on reusability and efficiency in development.
 
 ## Features
 
-- **CRUD Functionality**: Create, Read, Update, and Delete products and posts.
-- **Movie List Display**: Fetch and display movie lists from an external API.
-- **Responsive Design**: Built with Tailwind CSS for a modern and responsive user interface.
-- **Component-based Structure**: Utilizes components for efficient styling and development.
-- **SQLite Database**: Lightweight database for easy setup and management.
+- **Product Management**: Complete CRUD (Create, Read, Update, Delete) operations for fresh crab products.
+- **Shopping Cart**: User-friendly cart management for adding, updating, and removing products.
+- **Secure Payment Processing**: Integrated Midtrans payment gateway for smooth and secure transactions.
+- **Shipping Cost Calculation**: Real-time shipping cost estimation using Raja Ongkir for accurate delivery charges.
+- **Responsive User Interface**: Designed with Tailwind CSS to ensure a modern, responsive layout across devices.
+- **Reusable Components**: Built using reusable components for efficient development and consistent styling.
+- **SQLite Database**: Lightweight and easy-to-manage SQLite database for simplified setup.
 
 
 ## Getting Started
