@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
-import Navbar from './Navbar';
+import Navbar from '@/Components/Navbar';
 import Footer from '@/Components/Footer';
 
 const AuthenticatedLayout = ({ user, header, children }) => {
+    
     return (
         <div className="flex flex-col min-h-screen bg-gray-100">
             <Navbar user={user} />

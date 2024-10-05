@@ -4,9 +4,9 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { useEffect, useState } from 'react';
 import ganiPedia from '../../images/logo.png';
 
-
 const Navbar = ({ user }) => {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
+
     return (
         <nav className="bg-white border-b border-gray-100">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -19,9 +19,7 @@ const Navbar = ({ user }) => {
 
                         <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                             <NavLink href={route('dashboard')} active={route().current('dashboard')}>Dashboard</NavLink>
-                            <NavLink href={route('movies.index')} active={route().current('movies.index')}>Movie</NavLink>
                             <NavLink href={route('fish.index')} active={route().current('fish.index')}>Product</NavLink>
-
                         </div>
                     </div>
 
@@ -85,7 +83,6 @@ const Navbar = ({ user }) => {
             <div className={(showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden'}>
                 <div className="pt-2 pb-3 space-y-1">
                     <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>Dashboard</ResponsiveNavLink>
-                    <ResponsiveNavLink href={route('movies.index')} active={route().current('movies.index')}>Movie</ResponsiveNavLink>
                     <ResponsiveNavLink href={route('fish.index')} active={route().current('fish.index')}>Product</ResponsiveNavLink>
                 </div>
 
