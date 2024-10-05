@@ -19,8 +19,6 @@ const Navbar = ({ user }) => {
 
                         <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                             <NavLink href={route('dashboard')} active={route().current('dashboard')}>Dashboard</NavLink>
-                            <NavLink href={route('posts.index')} active={route().current('posts.index')}>Post</NavLink>
-                            <NavLink href={route('movies.index')} active={route().current('movies.index')}>Movie</NavLink>
                             <NavLink href={route('fish.index')} active={route().current('fish.index')}>Product</NavLink>
                         </div>
                     </div>
@@ -85,8 +83,6 @@ const Navbar = ({ user }) => {
             <div className={(showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden'}>
                 <div className="pt-2 pb-3 space-y-1">
                     <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>Dashboard</ResponsiveNavLink>
-                    <ResponsiveNavLink href={route('posts.index')} active={route().current('posts.index')}>Post</ResponsiveNavLink>
-                    <ResponsiveNavLink href={route('movies.index')} active={route().current('movies.index')}>Movie</ResponsiveNavLink>
                     <ResponsiveNavLink href={route('fish.index')} active={route().current('fish.index')}>Product</ResponsiveNavLink>
                 </div>
 

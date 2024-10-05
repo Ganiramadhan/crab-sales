@@ -1,7 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import UserLayout from '@/Layouts/UserLayout';
 import { Head } from '@inertiajs/react';
-import { useEffect } from 'react';
 import { FaNewspaper, FaFilm, FaBox, FaShoppingCart, FaUsers, FaChartLine, FaListUl } from 'react-icons/fa';
 
 export default function Dashboard({ auth }) {
